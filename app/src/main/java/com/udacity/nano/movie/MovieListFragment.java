@@ -17,8 +17,9 @@ import java.util.ArrayList;
  */
 public class MovieListFragment extends Fragment {
 
-    private ArrayAdapter<String> mSearchResultAdapter;
+    private final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
+    private ArrayAdapter<String> mSearchResultAdapter;
     public MovieListFragment() {
     }
 
