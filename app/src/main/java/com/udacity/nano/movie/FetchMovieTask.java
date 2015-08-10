@@ -10,41 +10,41 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class FetchMovieTask extends AsyncTask<String, Void, Map<Long,String>> {
+public class FetchMovieTask extends AsyncTask<String, Void, List<MovieItem>> {
 
     private static final String LOG_TAG = FetchMovieTask.class.getSimpleName();
-    private final String API_KEY;
 
     private ImageAdapter mMovieAdapter;
     private final Context mContext;
 
-    public FetchMovieTask(Context context, ImageAdapter movieAdapter, String apiKey) {
+    public FetchMovieTask(Context context, ImageAdapter movieAdapter) {
         mContext = context;
         mMovieAdapter = movieAdapter;
-        API_KEY = apiKey;
     }
 
     @Override
-    protected Map<Long,String> doInBackground(String... params) {
-//        if(params.length == 0)
-//            return null;
+    protected List<MovieItem> doInBackground(String... params) {
+        if(params.length == 0)
+            return null;
         HttpURLConnection urlConnection = null;
         BufferedReader br = null;
         String movieListJsonStr = null;
         try {
-            String MOVIE_LIST_BASE_URL = getBaseUrl();
+            String MOVIE_LIST_BASE_URL = getBaseUrl(params[0]);
         }catch (Exception e) {
 
         }
         return getMovieDataFromJson(movieListJsonStr);
     }
 
-    private String getBaseUrl() {
-        return "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key="+API_KEY;
-        //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=a3e2ad4f22a7e0c381d454b7c432d6c3
+    private String getBaseUrl(String key) {
+        return "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key="+key;
     }
 
     /*
@@ -61,19 +61,21 @@ public class FetchMovieTask extends AsyncTask<String, Void, Map<Long,String>> {
          "title":"Minions","video":false,"vote_average":7.0,"vote_count":850}
      */
 
-    private Map<Long,String> getMovieDataFromJson(String movieListJsonStr)  {
+    private List<MovieItem> getMovieDataFromJson(String movieListJsonStr)  {
 
         final String RESULT = "results";
         final String MOVIE_ID = "id";
         final String POSTER_PATH = "poster_path";
-        Map<Long, String> results = new HashMap<>();
+        List<MovieItem> results = new ArrayList<>();
         try {
             JSONObject movieListJson = new JSONObject(movieListJsonStr);
             JSONArray movieList = movieListJson.getJSONArray(RESULT);
             for(int i = 0; i < movieList.length(); i++) {
                 JSONObject movieItem = movieList.getJSONObject(i);
-                results.put(movieItem.getLong(MOVIE_ID),
-                            movieItem.getString(POSTER_PATH));
+                results.add(new MovieItem.Builder(
+                                    movieItem.getLong(MOVIE_ID),
+                                    movieItem.getString(POSTER_PATH))
+                                .build());
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -83,10 +85,14 @@ public class FetchMovieTask extends AsyncTask<String, Void, Map<Long,String>> {
     }
 
     @Override
-    protected void onPostExecute(Map<Long, String> result) {
+    protected void onPostExecute(List<MovieItem> result) {
+
         if(result != null && !result.isEmpty()){
             mMovieAdapter.clear();
-//            for()
+            Collections.sort(result);
+            for(MovieItem mi: result) {
+                mMovieAdapter.add(mi.getmPosterUrl());
+            }
         }
     }
 }

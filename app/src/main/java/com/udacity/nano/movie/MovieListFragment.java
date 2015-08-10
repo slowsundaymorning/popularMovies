@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ public class MovieListFragment extends Fragment {
 
     private final String LOG_TAG = MovieListFragment.class.getSimpleName();
 
-    private ArrayAdapter<String> mSearchResultAdapter;
+    private ImageAdapter mSearchResultAdapter;
     public MovieListFragment() {
     }
 
     private void updateMovieList() {
-        FetchMovieTask task = new FetchMovieTask(getString(R.string.api_key));
-        task.execute();
+        FetchMovieTask task = new FetchMovieTask(getActivity(), mSearchResultAdapter);
+        task.execute(getString(R.string.api_key));
     }
 
 
@@ -38,20 +39,10 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mSearchResultAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.list_item_movie,
-                R.id.list_item_movies_view,
-                new ArrayList<String>());
+        mSearchResultAdapter = new ImageAdapter(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.list_item_movies_view);
-        listView.setAdapter(mSearchResultAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ImageView listView = (ImageView) rootView.findViewById(R.id.list_item_movies_view);
 
-            }
-        });
         return rootView;
     }
 }
