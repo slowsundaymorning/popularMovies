@@ -9,7 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,9 +40,42 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<MovieItem>> {
         BufferedReader br = null;
         String movieListJsonStr = null;
         try {
+            Log.d(LOG_TAG, "app_key "+params[0]);
             String MOVIE_LIST_BASE_URL = getBaseUrl(params[0]);
-        }catch (Exception e) {
+            Log.d(LOG_TAG, "MOVIE_LIST_BASE_URLy "+MOVIE_LIST_BASE_URL);
+            URL url = new URL(MOVIE_LIST_BASE_URL);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
 
+            // Read the input stream into a String
+            InputStream inputStream = urlConnection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+            if (inputStream == null) {
+                // Nothing to do.
+                return null;
+            }
+            br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = br.readLine()) != null)
+                buffer.append(line + "\n");
+            if (buffer.length() == 0) {
+                return null;
+            }
+            movieListJsonStr = buffer.toString();
+            Log.d(LOG_TAG, "movieListJsonStr "+movieListJsonStr);
+        }catch (Exception e) {
+            Log.e(LOG_TAG, "Error", e);
+            return null;
+        } finally {
+            if(urlConnection != null)
+                urlConnection.disconnect();
+            if(br != null)
+                try {
+                    br.close();
+                } catch (final IOException e) {
+                    Log.e(LOG_TAG, "Error closing stream",e);
+                }
         }
         return getMovieDataFromJson(movieListJsonStr);
     }

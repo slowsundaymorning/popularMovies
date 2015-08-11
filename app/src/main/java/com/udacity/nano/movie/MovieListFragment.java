@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -41,8 +42,8 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         mSearchResultAdapter = new ImageAdapter(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ImageView listView = (ImageView) rootView.findViewById(R.id.list_item_movies_view);
-
+        GridView gridView = (GridView) rootView.findViewById(R.id.movie_list_view);
+        gridView.setAdapter(mSearchResultAdapter);
         return rootView;
     }
 }

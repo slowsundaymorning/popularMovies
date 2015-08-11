@@ -1,6 +1,7 @@
 package com.udacity.nano.movie;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,6 +15,8 @@ import java.util.List;
 /**
  */
 public class ImageAdapter extends BaseAdapter {
+
+    private static final String LOG_TAG = ImageAdapter.class.getSimpleName();
 
     private Context mContext;
     private final List<String> mImagesUrls;
@@ -38,6 +41,7 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    private final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/%s";
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
@@ -46,8 +50,11 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
+        String url = getItem(position);
+        Log.d(LOG_TAG, String.format("Poster Url %d : %s", position, url));
+
         Picasso.with(mContext).
-                load(getItem(position)).
+                load(String.format(BASE_POSTER_URL,getItem(position))).
                 into(imageView);
         return imageView;
     }
