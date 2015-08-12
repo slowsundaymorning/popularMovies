@@ -7,16 +7,10 @@
     <GridView android:id="@+id/movie_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:columnWidth="150dp"
-        android:drawSelectorOnTop="true"
-        android:gravity="center"
-        android:numColumns="2"
+        android:columnWidth="110dp"
+        android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp"
-        android:focusable="true"
-        android:clickable="true"
-
+        android:gravity="center"
         />
 
 </FrameLayout>
