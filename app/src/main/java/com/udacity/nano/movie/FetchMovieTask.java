@@ -15,25 +15,22 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
-public class FetchMovieTask extends AsyncTask<String, Void, List<MovieItem>> {
+public class FetchMovieTask extends AsyncTask<String, Void, Collection<MovieItem>> {
 
     private static final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
-    private ImageAdapter mMovieAdapter;
+    private MovieListAdapter mMovieAdapter;
     private final Context mContext;
 
-    public FetchMovieTask(Context context, ImageAdapter movieAdapter) {
+    public FetchMovieTask(Context context, MovieListAdapter movieAdapter) {
         mContext = context;
         mMovieAdapter = movieAdapter;
     }
 
     @Override
-    protected List<MovieItem> doInBackground(String... params) {
+    protected Collection<MovieItem> doInBackground(String... params) {
         if(params.length == 0)
             return null;
         HttpURLConnection urlConnection = null;
@@ -95,24 +92,41 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<MovieItem>> {
          "release_date":"2015-07-10",
          "poster_path":"/qARJ35IrJNFzFWQGcyWP4r1jyXE.jpg",
          "popularity":47.804014,
-         "title":"Minions","video":false,"vote_average":7.0,"vote_count":850}
+         "title":"Minions","video":false,
+         "vote_average":7.0,
+         "vote_count":850}
      */
 
-    private List<MovieItem> getMovieDataFromJson(String movieListJsonStr)  {
+    private Collection<MovieItem> getMovieDataFromJson(String movieListJsonStr)  {
 
+        /*
+        original title
+    movie poster image thumbnail
+    A plot synopsis (called overview in the api)
+    user rating (called vote_average in the api)
+     release date
+         */
         final String RESULT = "results";
         final String MOVIE_ID = "id";
         final String POSTER_PATH = "poster_path";
-        List<MovieItem> results = new ArrayList<>();
+        final String RELEASE_DATE = "release_date";
+        final String USER_RATING = "vote_average";
+        final String ORIGINAL_TITLE = "original_title";
+        final String PLOT = "overview";
+        Collection<MovieItem> results = new ArrayList<>();
         try {
             JSONObject movieListJson = new JSONObject(movieListJsonStr);
             JSONArray movieList = movieListJson.getJSONArray(RESULT);
             for(int i = 0; i < movieList.length(); i++) {
                 JSONObject movieItem = movieList.getJSONObject(i);
                 results.add(new MovieItem.Builder(
-                                    movieItem.getLong(MOVIE_ID),
-                                    movieItem.getString(POSTER_PATH))
-                                .build());
+                        movieItem.getLong(MOVIE_ID),
+                        movieItem.getString(POSTER_PATH))
+                        .originalTitle(movieItem.getString(ORIGINAL_TITLE))
+                        .originalTitle(movieItem.getString(USER_RATING))
+                        .originalTitle(movieItem.getString(PLOT))
+                        .originalTitle(movieItem.getString(RELEASE_DATE))
+                        .build());
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -122,14 +136,11 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<MovieItem>> {
     }
 
     @Override
-    protected void onPostExecute(List<MovieItem> result) {
+    protected void onPostExecute(Collection<MovieItem> result) {
 
         if(result != null && !result.isEmpty()){
             mMovieAdapter.clear();
-            Collections.sort(result);
-            for(MovieItem mi: result) {
-                mMovieAdapter.add(mi.getmPosterUrl());
-            }
+            mMovieAdapter.addAll(result);
         }
     }
 }

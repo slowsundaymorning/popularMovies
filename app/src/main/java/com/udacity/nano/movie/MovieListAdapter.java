@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -13,30 +12,33 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  */
-public class ImageAdapter extends BaseAdapter {
+public class MovieListAdapter extends BaseAdapter {
 
-    private static final String LOG_TAG = ImageAdapter.class.getSimpleName();
+    private static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private final List<String> mImagesUrls;
+//    private final List<String> mImagesUrls;
+    private final List<MovieItem> mMovieList;
 
-    public ImageAdapter(Context context) {
+    public MovieListAdapter(Context context) {
         mContext = context;
-        mImagesUrls = new ArrayList<>();
+        mMovieList = new ArrayList<>();
     }
 
     @Override
     public int getCount() {
-        return mImagesUrls.size();
+        return mMovieList.size();
     }
 
     @Override
-    public String getItem(int position) {
-        return mImagesUrls.get(position);
+    public MovieItem getItem(int position) {
+        return mMovieList.get(position);
     }
 
     @Override
@@ -50,8 +52,8 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView = (ImageView) convertView;
         if(convertView == null)
             imageView = new ImageView(mContext);
-        String url = getItem(position);
-        Log.d(LOG_TAG, String.format("Poster Url %d : %s", position, url));
+//        String url = getItem(position);
+
         final int targetWidth = parent.getWidth()/2;
         Transformation transformation = new Transformation() {
             @Override
@@ -74,7 +76,7 @@ public class ImageAdapter extends BaseAdapter {
             }
         };
         Picasso.with(mContext).
-                load(String.format(BASE_POSTER_URL, getItem(position))).
+                load(String.format(BASE_POSTER_URL, getItem(position).getmPosterUrl())).
                 transform(transformation).
 //                resize(500,800).
 //                centerInside().
@@ -84,10 +86,11 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public void clear() {
-        mImagesUrls.clear();
+        mMovieList.clear();
     }
 
-    public void add(String url) {
-        mImagesUrls.add(url);
+    public void addAll(Collection<MovieItem> movies) {
+        mMovieList.addAll(movies);
+        Collections.sort(mMovieList);
     }
 }
