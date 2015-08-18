@@ -1,8 +1,13 @@
 package com.udacity.nano.movie;
 
 
-public class MovieItem implements Comparable<MovieItem> {
+import java.io.Serializable;
 
+public class MovieItem implements Comparable<MovieItem>, Serializable {
+
+    public static final String EXTRA_TAG ="movieItem";
+
+    private static final long serialVersionUID = 1L;
     /*
     original title
     movie poster image thumbnail
@@ -12,6 +17,7 @@ public class MovieItem implements Comparable<MovieItem> {
      */
 
     private static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+
     private final long mId;
     private final String mOriginalTitle;
     private final String mPosterUrl;
@@ -59,31 +65,35 @@ public class MovieItem implements Comparable<MovieItem> {
             this._releaseDate = date;
             return this;
         }
+        public Builder plot(String plot) {
+            this._plot = plot;
+            return this;
+        }
         public MovieItem build() {
             return new MovieItem(this);
         }
     }
 
-    public long getmId() {
+    public long getId() {
         return mId;
     }
 
-    public String getmPosterUrl() {
+    public String getPosterUrl() {
         return mPosterUrl;
     }
 
-    public int getmRank() {
+    public int getRank() {
         return mRank;
     }
-    public String getmOriginalTitle() {
+    public String getOriginalTitle() {
         return mOriginalTitle;
     }
 
-    public String getmUserRating() {
+    public String getUserRating() {
         return mUserRating;
     }
 
-    public String getmPlot() {
+    public String getPlot() {
         return mPlot;
     }
 

@@ -54,7 +54,7 @@ public class MovieListAdapter extends BaseAdapter {
             imageView = new ImageView(mContext);
 //        String url = getItem(position);
 
-        final int targetWidth = parent.getWidth()/2;
+        final int targetWidth = parent.getWidth()/3;
         Transformation transformation = new Transformation() {
             @Override
             public Bitmap transform(Bitmap source) {
@@ -76,10 +76,10 @@ public class MovieListAdapter extends BaseAdapter {
             }
         };
         Picasso.with(mContext).
-                load(String.format(BASE_POSTER_URL, getItem(position).getmPosterUrl())).
-                transform(transformation).
-//                resize(500,800).
-//                centerInside().
+                load(String.format(BASE_POSTER_URL, getItem(position).getPosterUrl())).
+//                transform(transformation).
+                resize(500,800).
+                centerInside().
                 into(imageView);
 
         return imageView;

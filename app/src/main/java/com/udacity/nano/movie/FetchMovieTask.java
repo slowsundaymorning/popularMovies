@@ -123,9 +123,9 @@ public class FetchMovieTask extends AsyncTask<String, Void, Collection<MovieItem
                         movieItem.getLong(MOVIE_ID),
                         movieItem.getString(POSTER_PATH))
                         .originalTitle(movieItem.getString(ORIGINAL_TITLE))
-                        .originalTitle(movieItem.getString(USER_RATING))
-                        .originalTitle(movieItem.getString(PLOT))
-                        .originalTitle(movieItem.getString(RELEASE_DATE))
+                        .userRating(movieItem.getString(USER_RATING))
+                        .plot(movieItem.getString(PLOT))
+                        .releaseDate(movieItem.getString(RELEASE_DATE))
                         .build());
             }
         } catch (JSONException e) {
