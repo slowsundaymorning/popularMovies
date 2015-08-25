@@ -38,7 +38,7 @@ public class FetchMovieTask extends AsyncTask<String, Void, Collection<MovieItem
         String movieListJsonStr = null;
         try {
             Log.d(LOG_TAG, "app_key "+params[0]);
-            String MOVIE_LIST_BASE_URL = getBaseUrl(params[0]);
+            String MOVIE_LIST_BASE_URL = getBaseUrl(params[0], params[1]);
             Log.d(LOG_TAG, "MOVIE_LIST_BASE_URLy "+MOVIE_LIST_BASE_URL);
             URL url = new URL(MOVIE_LIST_BASE_URL);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -77,8 +77,8 @@ public class FetchMovieTask extends AsyncTask<String, Void, Collection<MovieItem
         return getMovieDataFromJson(movieListJsonStr);
     }
 
-    private String getBaseUrl(String key) {
-        return "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key="+key;
+    private String getBaseUrl(String key, String orderby) {
+        return String.format("http://api.themoviedb.org/3/discover/movie?sort_by=%s.desc&api_key=%s",orderby,key);
     }
 
     /*

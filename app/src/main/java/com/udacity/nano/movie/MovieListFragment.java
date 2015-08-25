@@ -1,9 +1,14 @@
 package com.udacity.nano.movie;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,13 +28,22 @@ public class MovieListFragment extends Fragment {
 
     private void updateMovieList() {
         FetchMovieTask task = new FetchMovieTask(getActivity(), mSearchResultAdapter);
-        task.execute(getString(R.string.api_key));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String orderBy = prefs.getString(getString(R.string.pref_order_key),
+                getString(R.string.pref_order_rate));
+        task.execute(getString(R.string.api_key), orderBy);
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
+        updateMovieList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         updateMovieList();
     }
 
@@ -50,4 +64,6 @@ public class MovieListFragment extends Fragment {
         });
         return rootView;
     }
+
+
 }

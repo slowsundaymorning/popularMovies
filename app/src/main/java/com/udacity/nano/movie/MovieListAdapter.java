@@ -46,7 +46,7 @@ public class MovieListAdapter extends BaseAdapter {
         return 0;
     }
 
-    private final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/%s";
+    public final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/%s";
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ImageView imageView = (ImageView) convertView;
